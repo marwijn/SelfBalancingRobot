@@ -19,17 +19,34 @@ void resetI2C()
   pinMode(16, INPUT);
 }
 
-
-
-int  initOrientation()
+void initWire()
 {
   Wire.begin(16, 14);
   Wire.setClock(400000L);
+
+  // On my board SDA is connected to pin 16, which is not supported by the ESP library
+  // to fix this I changed in AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\2.2.0\cores\esp8266.core_esp8266_si2c.c :
+
+  //#define SDA_LOW()   (GPES = (1 << twi_sda)) //Enable SDA (becomes output and since GPO is 0 for the pin, it will pull the line low)
+  //#define SDA_HIGH()  (GPEC = (1 << twi_sda)) //Disable SDA (becomes input and since it has pullup it will go high)
+  //#define SDA_READ()  ((GPI & (1 << twi_sda)) != 0)
+  //
+  //to:
+  //
+  //#define SDA_LOW()   (GP16E |= 1)
+  //#define SDA_HIGH()  (GP16E &= ~1)
+  // #define SDA_READ()  (GP16I & 0x01)
+  // and need to following register settings:
   GPF16 = GP16FFS(GPFFS_GPIO(16)); // function GPIO
   GPC16 = 0;  // ?
   GP16E &= ~1; // set to input
   GPF16 &= ~(1 << GP16FPD); // no pull down
   GP16O &= ~1; // set low
+}
+
+int  initOrientation()
+{
+  initWire();
 
   mpu.setClockSource(MPU6050_CLOCK_PLL_ZGYRO);
   mpu.setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
@@ -47,8 +64,8 @@ int  initOrientation()
     Serial.println("Enabling DMP...");
     mpu.setDMPEnabled(true);
   }
-   else 
-   { // ERROR!
+  else
+  { // ERROR!
     // 1 = initial memory load failed
     // 2 = DMP configuration updates failed
     // (if it's going to break, usually the code will be 1)
@@ -60,7 +77,7 @@ int  initOrientation()
 }
 
 
-bool dmpGetNewPhi(float* phi) 
+bool dmpGetNewPhi(float* phi)
 {
   int fifoCount = mpu.getFIFOCount();
   if (fifoCount > 18)
