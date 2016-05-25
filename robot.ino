@@ -19,6 +19,8 @@ static void _u0_putc(char c){
   U0F = c;
 }
 
+bool updating = false;
+
 void initSerial(){
   Serial.begin(74880);
   ets_install_putc1((void *) &_u0_putc);
@@ -48,7 +50,10 @@ void setup() {
 void loop()
 {
   updateLoop();
-  balanceLoop();
+  if (!updating)
+  {
+    balanceLoop();
+  }
 }
 
 

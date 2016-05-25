@@ -10,6 +10,7 @@ void initUpdate()
 
   ArduinoOTA.onStart([]() {
     Serial.println("Start");
+    updating = true;
   });
   ArduinoOTA.onEnd([]() {
     Serial.println("\nEnd");
