@@ -24,6 +24,7 @@ void resetI2C()
 int  initOrientation()
 {
   Wire.begin(16, 14);
+  Wire.setClock(400000L);
   GPF16 = GP16FFS(GPFFS_GPIO(16)); // function GPIO
   GPC16 = 0;  // ?
   GP16E &= ~1; // set to input
