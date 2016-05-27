@@ -3,6 +3,8 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <Wire.h>
+#include <DNSServer.h>
+
 #include "JJ_MPU6050_DMP_6Axis.h"
 #include "helper_3dmath.h"
 
