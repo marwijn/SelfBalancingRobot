@@ -63,7 +63,7 @@ float control_output = 0;
 
 #define KP_THROTTLE 0.1    
 #define KI_THROTTLE 0.04   
-
+bool down = true;
 
 void balanceLoop()
 {
@@ -74,7 +74,7 @@ void balanceLoop()
     // Get new orientation angle from IMU (MPU6050)
     angle_adjusted = newPhi;
     Serial.println(angle_adjusted);
-    if (fabs(angle_adjusted) > 25)
+    if (fabs(angle_adjusted) > 45 | ((fabs(angle_adjusted > 10) && down)))
     {
       Serial.println("Robot down");
       setMotorSpeed(0, 0);
@@ -103,7 +103,7 @@ void balanceLoop()
       // SPEED CONTROL: This is a PI controller.
       //    input:user throttle, variable: estimated robot speed, output: target robot angle to get the desired speed
       float target_angle = speedPIControl(dt, estimated_speed_filtered, throttle, KP_THROTTLE /*Kp_thr*/, KI_THROTTLE /*Ki_thr*/);
-      target_angle = constrain(target_angle, -7, 7); // limited output
+      target_angle = constrain(target_angle, -15, 15); // limited output
       //target_angle = 0;
       // Stability control: This is a PD controller.
       //    input: robot target angle(from SPEED CONTROL), variable: robot angle, output: Motor speed
