@@ -1,0 +1,16 @@
+﻿<template>
+    <section class="au-animate">
+        <form role="form" submit.delegate="submit()">
+        <div class="form-group">
+            <label for="ssid">SSID</label>
+            <input type="text" value.bind="ssid" class="form-control" id="ssid" placeholder="ssid">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" value.bind="password" class="form-control" id="password">
+        </div>
+       
+        <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </section>
+</template>
