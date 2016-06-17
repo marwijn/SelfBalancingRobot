@@ -1,3 +1,5 @@
+#define __arm__
+
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
@@ -5,11 +7,11 @@
 #include <Wire.h>
 #include <DNSServer.h>
 
-#include "JJ_MPU6050_DMP_6Axis.h"
-#include "helper_3dmath.h"
+#include "libraries\JJ_MPU6050_DMP_6Axis.h"
+#include "libraries\helper_3dmath.h"
 
-#include "libraries\EspAsyncTCP\src\ESPAsyncTCP.h"
-#include "libraries\EspAsyncWebServer\src\EspAsyncWebServer.h"
+#include "libraries\ESPAsyncTCP.h"
+#include "libraries\EspAsyncWebServer.h"
 
 
 extern "C" void system_set_os_print(uint8 onoff);
