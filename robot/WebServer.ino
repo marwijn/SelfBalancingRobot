@@ -126,13 +126,12 @@ void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventTyp
     if (info->final && info->index == 0 && info->len == len) {
       //the whole message is in a single frame and we got all of it's data
       os_printf("ws[%s][%u] %s-message[%llu]: ", server->url(), client->id(), (info->opcode == WS_TEXT) ? "text" : "binary", info->len);
-
       if (info->opcode == WS_TEXT) {
-        for (size_t i = 0; i < info->len; i++) {
-          msg += (char) data[i];
-        }
+        textMessageReceived((char*) data, info->len);
+        
       } else {
-        setSpeed((signed char)data[0], (signed char) data[1]);
+        textMessageReceived((char*) data, info->len);
+        
       }
     }
     os_printf("%s\n", msg.c_str());

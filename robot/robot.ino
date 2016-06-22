@@ -13,6 +13,8 @@
 #include "libraries\ESPAsyncTCP.h"
 #include "libraries\EspAsyncWebServer.h"
 
+#include "Libraries\include\ArduinoJson.h"
+
 
 extern "C" void system_set_os_print(uint8 onoff);
 extern "C" void ets_install_putc1(void* routine);
