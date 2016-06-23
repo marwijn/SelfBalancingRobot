@@ -6,6 +6,7 @@
 #include <ArduinoOTA.h>
 #include <Wire.h>
 #include <DNSServer.h>
+#include <EEPROM.h>
 
 #include "libraries\JJ_MPU6050_DMP_6Axis.h"
 #include "libraries\helper_3dmath.h"

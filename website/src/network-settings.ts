@@ -1,4 +1,5 @@
 ﻿import {autoinject} from 'aurelia-framework';
+import {}
 
 @autoinject
 export class NetworkSettings {

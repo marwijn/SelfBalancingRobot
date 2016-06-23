@@ -1,11 +1,15 @@
 ﻿import {autoinject} from 'aurelia-framework';
+import {Communication} from 'communication';
 
 @autoinject
-export class NetworkSettings {
+export class RobotControl {
     speed = 0;
     rotation = 0;
+    communication : Communication;
 
-    constructor() {
+    constructor(communication: Communication)
+    {
+        this.communication = communication;
     }
 
     get message(): string {
