@@ -1,6 +1,7 @@
 const byte DNS_PORT = 53;
 IPAddress apIP(192, 168, 1, 1);
 DNSServer dnsServer;
+bool ap = false;
 
 struct WifiSettings
 {
@@ -15,15 +16,16 @@ void initWifi()
   EEPROM.get(0, settings);
   settings.ssid[32] = 0;
   settings.password[32] = 0;
-  
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(settings.ssid, settings.password);
 
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+ // if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
+    ap = true;
     WiFi.mode(WIFI_AP);
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-    WiFi.softAP("DNSServer CaptivePortal example");
+    WiFi.softAP("SelfBalancingRobot");
 
     dnsServer.start(DNS_PORT, "*", apIP);
   }
@@ -36,6 +38,14 @@ void initWifi()
   {
     MDNS.addService("http", "tcp", 80);
     Serial.println("mDNS responder started");
+  }
+}
+
+void wifiLoop()
+{
+  if (ap)
+  {
+    dnsServer.processNextRequest();
   }
 }
 

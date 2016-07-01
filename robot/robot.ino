@@ -39,14 +39,14 @@ void setup() {
  
   initSerial();
   
-  Serial.println("Initializing Motors");
-  initMotors();
-  Serial.println("Initializing Orientation");
-  initOrientation();
+  //Serial.println("Initializing Motors");
+  //initMotors();
+  //Serial.println("Initializing Orientation");
+  //initOrientation();
   Serial.println("Initialing Wifi");
   initWifi();
-  Serial.println("Initialing Update");
-  initUpdate();
+  //Serial.println("Initialing Update");
+  //initUpdate();
   Serial.println("Ready");
   initWebserver();
 }
@@ -56,6 +56,7 @@ void setup() {
 
 void loop()
 {
+  wifiLoop();
   updateLoop();
   if (!updating)
   {
