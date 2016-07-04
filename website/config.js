@@ -278,7 +278,8 @@ System.config({
       "bootstrap"
     ],
     "network-settings.js": [
-      "aurelia-framework"
+      "aurelia-framework",
+      "communication"
     ],
     "robot-control.js": [
       "aurelia-framework",

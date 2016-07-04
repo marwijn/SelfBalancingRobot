@@ -4,7 +4,7 @@
 void textMessageReceived(char* data, int length)
 {
   if (length > 254) return;
-  
+
   char message[255];
   strncpy(message, data, length);
   message[length] = 0;
@@ -15,13 +15,11 @@ void textMessageReceived(char* data, int length)
   {
     setWifiSettings(root);
   }
-  
+
 }
 
 void binaryMessageReceived(char* data, int length)
 {
-  Serial.print("new speed: ");
-  Serial.println((int) data[0]);
   setSpeed((signed char)data[0], (signed char) data[1]);
 }
 

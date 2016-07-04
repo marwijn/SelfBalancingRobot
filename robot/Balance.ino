@@ -7,8 +7,8 @@
 #define ITERM_MAX_ERROR 25   // Iterm windup constants for PI control //40
 #define ITERM_MAX 8000       // 5000
 float PID_errorSum = 0;
-float throttle;
-float steering;
+float throttle = 0;
+float steering = 0;
 
 // PI controller implementation (Proportional, integral). DT is in miliseconds
 float speedPIControl(float DT, float input, float setPoint,  float Kp, float Ki)
@@ -85,6 +85,10 @@ void balanceLoop()
       setPointOld = 0;
       PID_errorSum = 0;
       control_output = 0;
+      estimated_speed_filtered = 0;
+      throttle = 0;
+      steering = 0;
+      down = true;
     }
     else
     {
@@ -97,6 +101,9 @@ void balanceLoop()
 
       int16_t angular_velocity = (angle_adjusted - angle_adjusted_Old) * 90.0; // 90 is an empirical extracted factor to adjust for real units
       int16_t estimated_speed = -actual_robot_speed_Old - angular_velocity;     // We use robot_speed(t-1) or (t-2) to compensate the delay
+
+      if (down) estimated_speed = 0;
+      
       estimated_speed_filtered = estimated_speed_filtered * 0.95 + (float)estimated_speed * 0.05;  // low pass filter on estimated speed
 
 
@@ -125,13 +132,15 @@ void balanceLoop()
       enableMotors(true);
       setMotorSpeed(0, motor1);
       setMotorSpeed(1, motor2);
-
+      down = false;
     }
   }
 }
 
 void setSpeed (signed char speed, signed char steer)
 {
+  Serial.print("new speed: ");
+  Serial.println(speed);
   throttle = speed * 5;
   steering = steer;
 }

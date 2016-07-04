@@ -1,15 +1,17 @@
 ﻿import {autoinject} from 'aurelia-framework';
-import {}
+import {Communication} from 'communication';
 
 @autoinject
 export class NetworkSettings {
     ssid: string;
     password: string;
+    communication: Communication;
 
-    constructor() {      
+    constructor(communication: Communication) {
+        this.communication = communication;
     }
 
     submit() {
-        alert(`Welcome, ${this.ssid}, ${this.password}!`);
+        this.communication.setWifiSetting(this.ssid, this.password);
     }
 }

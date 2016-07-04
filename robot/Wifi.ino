@@ -20,7 +20,7 @@ void initWifi()
   WiFi.mode(WIFI_STA);
   WiFi.begin(settings.ssid, settings.password);
 
- // if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     ap = true;
     WiFi.mode(WIFI_AP);
