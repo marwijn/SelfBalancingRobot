@@ -77,6 +77,12 @@ int  initOrientation()
 }
 
 
+String logAngle(float x, float y, float z, float w, String in)
+{
+  float phi2  = (atan2(2 * (y * z + w * x), -( w * w - x * x - y * y + z * z)) * RAD2GRAD);
+  return in + String (phi2) + " ";
+}
+
 bool dmpGetNewPhi(float* phi)
 {
   int fifoCount = mpu.getFIFOCount();
@@ -94,7 +100,64 @@ bool dmpGetNewPhi(float* phi)
   Quaternion q;
   mpu.getFIFOBytes(fifoBuffer, 18); // We only read the quaternion
   mpu.dmpGetQuaternion(&q, fifoBuffer);
-  *phi = (atan2(2 * (q.y * q.z + q.w * q.x), -( q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z)) * RAD2GRAD);
+//  float psi = RAD2GRAD * atan2(q.x*q.y - 2*q.w*q.z, 2*q.w*q.w + 2*q . x*q . x - 1);   // psi
+//  *phi = psi-15;
+//  *phi = (atan2(2 * (q.y * q.z + q.w * q.x), -( q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z)) * RAD2GRAD);
+
+
+ VectorFloat gravity;
+    mpu.dmpGetGravity(&gravity, &q);
+
+
+    *phi = atan2(gravity.x, -gravity.y) * RAD2GRAD;
+    
+
+    
+  static int debugCount = 0;
+  debugCount++;
+  if (debugCount > 1000)
+  {
+    String msg = String("") + gravity.x + " " + gravity.y + " " + gravity.z + " "  + atan2(gravity.x, -gravity.y) * RAD2GRAD;
+    SendDebugMessage(msg);
+    debugCount = 0;
+    
+    
+//    float psi = RAD2GRAD * atan2(q.x*q.y - 2*q.w*q.z, 2*q.w*q.w + 2*q . x*q . x - 1);   // psi  // x,y,  w,z  w x 
+//    float theta = -RAD2GRAD * asin(2*q . x*q . z + 2*q . w*q . y);                              // theta
+//    float phi2 = RAD2GRAD * atan2(2*q.y*q.z - 2*q.w*q.x, 2*q . w*q . w + 2*q . z*q . z - 1);   //  phi y,z, wx     w,z
+   /* msg = logAngle(q.x, q.y, q.z, q.w, msg);
+    msg = logAngle(q.x, q.z, q.y, q.w, msg);
+    msg = logAngle(q.y, q.x, q.z, q.w, msg);
+    msg = logAngle(q.y, q.z, q.x, q.w, msg);
+    msg = logAngle(q.z, q.x, q.y, q.w, msg);
+    msg = logAngle(q.z, q.y, q.x, q.w, msg);
+
+
+    msg = logAngle(q.w, q.y, q.z, q.x, msg);
+    msg = logAngle(q.w, q.z, q.y, q.x, msg);
+    msg = logAngle(q.y, q.w, q.z, q.x, msg);
+    msg = logAngle(q.y, q.z, q.w, q.x, msg);
+    msg = logAngle(q.z, q.w, q.y, q.x, msg);
+    msg = logAngle(q.z, q.y, q.w, q.x, msg);
+
+
+    msg = logAngle(q.x, q.w, q.z, q.y, msg);
+    msg = logAngle(q.x, q.z, q.w, q.y, msg);
+    msg = logAngle(q.w, q.x, q.z, q.y, msg);
+    msg = logAngle(q.w, q.z, q.x, q.y, msg);
+    msg = logAngle(q.z, q.x, q.w, q.y, msg);
+    msg = logAngle(q.z, q.w, q.x, q.y, msg);
+
+
+    msg = logAngle(q.x, q.y, q.w, q.z, msg);
+    msg = logAngle(q.x, q.w, q.y, q.z, msg);
+    msg = logAngle(q.y, q.x, q.w, q.z, msg);
+    msg = logAngle(q.y, q.w, q.x, q.z, msg);
+    msg = logAngle(q.w, q.x, q.y, q.z, msg);
+    msg = logAngle(q.w, q.y, q.x, q.z, msg);
+*/
+   
+  }
   return true;
 }
 

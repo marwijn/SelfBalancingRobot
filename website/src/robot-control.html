@@ -1,7 +1,12 @@
 ﻿<template>
     <section class="au-animate">
-        <input type="range" max="100" min="-100" value.bind="speed & throttle:100"/>
-        <input type="range" max="100" min="-100" value.bind="rotation & throttle:100" />
-        <label>${message}</label>
+        <!--<input type="range" max="100" min="-100" value.bind="speed & throttle:100" class="speed-control"/>
+        <input type="range" max="100" min="-100" value.bind="rotation & throttle:100" class="steering-control"/>
+        -->
+        <div>${speed}</div>
+        <div>${rotation}</div>
+        <div>${alpha}</div> 
+        <div>${message}</div>  
+        done     
     </section>
 </template>

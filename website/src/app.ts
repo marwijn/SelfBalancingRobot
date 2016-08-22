@@ -6,6 +6,7 @@ export class App {
   configureRouter(config: RouterConfiguration, router: Router) {
     config.title = 'Aurelia';
     config.map([
+      { route: ['debug'], name: 'debug', moduleId: 'debug', nav: true, title: 'Debug' },
       { route: ['network-settings'], name: 'network-settings', moduleId: 'network-settings', nav: true, title: 'Network Settings' },
       { route: ['', 'robot-control'], name: 'robot-control', moduleId: 'robot-control', nav: true, title: 'Robot Control' },
     ]);

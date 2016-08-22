@@ -8,7 +8,7 @@ class SPIFFSEditor: public AsyncWebHandler {
   public:
     SPIFFSEditor(String username = String(), String password = String()): _username(username), _password(password), _uploadAuthenticated(false) {}
     bool canHandle(AsyncWebServerRequest *request) {
-      if (request->method() == HTTP_GET && request->url() == "/edit" && (SPIFFS.exists("/edit.htm") || SPIFFS.exists("/edit.htm.gz") || true))
+      if (request->method() == HTTP_GET && request->url() == "/edit" && (SPIFFS.exists("/edit.htm") || SPIFFS.exists("/edit.htm.gz")))
         return true;
       else if (request->method() == HTTP_GET && request->url() == "/list")
         return true;
@@ -57,7 +57,7 @@ class SPIFFSEditor: public AsyncWebHandler {
       } else if (request->method() == HTTP_GET) {
         String path = request->url();
         if (path.endsWith("/"))
-          path += "index.htm";
+          path += "index.html";
         request->send(SPIFFS, path, String(), request->hasParam("download"));
       } else if (request->method() == HTTP_DELETE) {
         if (request->hasParam("path", true)) {
@@ -109,8 +109,10 @@ class SPIFFSEditor: public AsyncWebHandler {
 AsyncWebServer server(80);
 
 AsyncWebSocket ws("/ws");
+AsyncWebSocket debug("/debug");
 
-void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
+
+void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
   if (type == WS_EVT_CONNECT) {
     os_printf("ws[%s][%u] connect\n", server->url(), client->id());
     client->printf("Hello Client %u :)", client->id());
@@ -145,6 +147,27 @@ void onEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventTyp
   }
 }
 
+AsyncWebSocketClient* debugClient;
+
+void SendDebugMessage(String message)
+{
+  if (debugClient == NULL) return;
+  debugClient->printf(message.c_str());
+}
+
+
+void onDebugEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
+  if (type == WS_EVT_CONNECT) {
+    client->printf("debug connected");
+    debugClient = client;
+  } else if (type == WS_EVT_DISCONNECT) {
+    debugClient = NULL;
+  } else if (type == WS_EVT_ERROR) {
+  } else if (type == WS_EVT_PONG) {
+  } else if (type == WS_EVT_DATA) {
+  }
+}
+
 
 
 const char* http_username = "admin";
@@ -153,17 +176,19 @@ const char* http_password = "admin";
 
 void initWebserver() {
   SPIFFS.begin();
-  ws.onEvent(onEvent);
+  ws.onEvent(onWsEvent);
+  debug.onEvent(onDebugEvent);
   server.addHandler(&ws);
-  server.serveStatic("/fs", SPIFFS, "/");
+  server.addHandler(&debug);
+  server.serveStatic("/", SPIFFS, "/");
 
   server.on("/heap", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(200, "text/plain", String(ESP.getFreeHeap()));
   });
 
- 
 
-  server.addHandler(new SPIFFSEditor(http_username, http_password));
+
+  //server.addHandler(new SPIFFSEditor(http_username, http_password));
 
   server.onNotFound([](AsyncWebServerRequest * request) {
     os_printf("NOT_FOUND: ");

@@ -168,6 +168,8 @@ System.config({
       "child-router.html!github:systemjs/plugin-text@0.0.3.js",
       "child-router.js",
       "communication.js",
+      "debug.html!github:systemjs/plugin-text@0.0.3.js",
+      "debug.js",
       "main.js",
       "nav-bar.html!github:systemjs/plugin-text@0.0.3.js",
       "network-settings.html!github:systemjs/plugin-text@0.0.3.js",
@@ -273,6 +275,10 @@ System.config({
   depCache: {
     "blur-image.js": [
       "aurelia-framework"
+    ],
+    "debug.js": [
+      "aurelia-framework",
+      "communication"
     ],
     "main.js": [
       "bootstrap"
