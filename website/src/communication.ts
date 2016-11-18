@@ -1,10 +1,12 @@
 ﻿export class Communication {
     socket: WebSocket;
     debugSocket: WebSocket;
+    lastMessage : Date;
 
     handlers: { (msg: string): void; }[] = [];
 
     constructor() {
+        this.lastMessage = new Date();
         this.socket = new WebSocket(`ws://${window.location.hostname}/ws`);
         this.debugSocket = new WebSocket(`ws://${window.location.hostname}/debug`);
         this.debugSocket.onmessage = (x) => { this.debugMsgReceived(x) };
@@ -21,7 +23,11 @@
     }
 
     setSpeed(speed: number, steering: number): void {
-        console.trace("set speed");
+        let now = new Date();
+        let elapsed = now - this.lastMessage;
+        if (elapsed < 200) return;
+        this.lastMessage = now;
+
         let array = new Int8Array(2);
         array[0] = speed;
         array[1] = steering;

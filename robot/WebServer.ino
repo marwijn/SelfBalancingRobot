@@ -28,8 +28,8 @@ class SPIFFSEditor: public AsyncWebHandler {
         return request->requestAuthentication();
 
       if (request->method() == HTTP_GET && request->url() == "/edit") {
-        //request->send(200,"text/html" ,edit);
-        //server.sendContent(edit);
+//        request->send(200,"text/html" ,edit);
+//        server.sendContent(edit);
         request->send(SPIFFS, "/edit.htm");
       } else if (request->method() == HTTP_GET && request->url() == "/list") {
         if (request->hasParam("dir")) {
@@ -188,7 +188,8 @@ void initWebserver() {
 
 
 
-  //server.addHandler(new SPIFFSEditor(http_username, http_password));
+  server.addHandler(new SPIFFSEditor(http_username, http_password));
+
 
   server.onNotFound([](AsyncWebServerRequest * request) {
     os_printf("NOT_FOUND: ");
@@ -236,6 +237,7 @@ void initWebserver() {
 
     request->send(404);
   });
+  
   server.onFileUpload([](AsyncWebServerRequest * request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
     if (!index)
       os_printf("UploadStart: %s\n", filename.c_str());

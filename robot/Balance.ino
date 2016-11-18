@@ -1,11 +1,11 @@
 
-#define MAX_ACCEL 7
+#define MAX_ACCEL 5
 
 #define RAD2GRAD 57.2957795
 #define GRAD2RAD 0.01745329251994329576923690768489
 
 #define ITERM_MAX_ERROR 25   // Iterm windup constants for PI control //40
-#define ITERM_MAX 8000       // 5000
+#define ITERM_MAX 5000       // 5000
 float PID_errorSum = 0;
 float throttle = 0;
 float steering = 0;
@@ -13,6 +13,7 @@ float steering = 0;
 // PI controller implementation (Proportional, integral). DT is in miliseconds
 float speedPIControl(float DT, float input, float setPoint,  float Kp, float Ki)
 {
+ // setPoint = 50;
   float error;
   float output;
 
@@ -21,9 +22,24 @@ float speedPIControl(float DT, float input, float setPoint,  float Kp, float Ki)
   PID_errorSum = constrain(PID_errorSum, -ITERM_MAX, ITERM_MAX);
 
   //Serial.println(PID_errorSum);
-
+  Ki = 0.32;
   output = Kp * error + Ki * PID_errorSum * DT * 0.001; // DT is in miliseconds...
+
+  static int debugCount = 0;
+  
+  debugCount++;
+  if (debugCount > 1000)
+  {
+    String msg = String("") + input + " " + setPoint + " " + PID_errorSum + " "  + output;
+    SendDebugMessage(msg);
+    debugCount = 0;
+  }
+    
+    
+
+  
   return (output);
+  
 }
 
 #define KP 0.19
@@ -42,7 +58,7 @@ float stabilityPDControl(float DT, float input, float setPoint,  float Kp, float
   // Kd is implemented in two parts
   //    The biggest one using only the input (sensor) part not the SetPoint input-input(t-2)
   //    And the second using the setpoint to make it a bit more agressive   setPoint-setPoint(t-1)
-  output = Kp * error + (Kd * (setPoint - setPointOld) - Kd * (input - PID_errorOld2)) / DT;
+  output = Kp * error + (0 * (setPoint - setPointOld) - Kd * (input - PID_errorOld2)) / DT;
   //Serial.print(Kd*(error-PID_errorOld));Serial.print("\t");
   PID_errorOld2 = PID_errorOld;
   PID_errorOld = input;  // error for Kd is only the input component
@@ -61,7 +77,7 @@ float control_output = 0;
 
 #define MAX_CONTROL_OUTPUT 500
 
-#define KP_THROTTLE 0.1    
+#define KP_THROTTLE 0.07 //0.07    
 #define KI_THROTTLE 0.04   
 bool down = true;
 
@@ -73,10 +89,10 @@ void balanceLoop()
     angle_adjusted_Old = angle_adjusted;
     // Get new orientation angle from IMU (MPU6050)
     angle_adjusted = newPhi;
-    Serial.println(angle_adjusted);
-    if (fabs(angle_adjusted) > 45 | ((fabs(angle_adjusted > 10) && down)))
+    //Serial.println(angle_adjusted);
+    if (fabs(angle_adjusted) > 70 | ((fabs(angle_adjusted) > 10) && down))
     {
-      Serial.println("Robot down");
+      //Serial.println("Robot down");
       setMotorSpeed(0, 0);
       setMotorSpeed(1, 0);
       enableMotors(false);
@@ -110,7 +126,7 @@ void balanceLoop()
       // SPEED CONTROL: This is a PI controller.
       //    input:user throttle, variable: estimated robot speed, output: target robot angle to get the desired speed
       float target_angle = speedPIControl(dt, estimated_speed_filtered, throttle, KP_THROTTLE /*Kp_thr*/, KI_THROTTLE /*Ki_thr*/);
-      target_angle = constrain(target_angle, -15, 15); // limited output
+      target_angle = constrain(target_angle, -6, 6); // limited output
       //target_angle = 0;
       // Stability control: This is a PD controller.
       //    input: robot target angle(from SPEED CONTROL), variable: robot angle, output: Motor speed
@@ -139,9 +155,11 @@ void balanceLoop()
 
 void setSpeed (signed char speed, signed char steer)
 {
-  Serial.print("new speed: ");
-  Serial.println(speed);
-  throttle = speed * 5;
-  steering = steer;
+  //Serial.print("new speed: ");
+  //Serial.println(speed);
+  throttle = speed*4;
+  steering = steer/2;
+  String msg = String("") + throttle + " " + steering;
+  SendDebugMessage(msg);
 }
 

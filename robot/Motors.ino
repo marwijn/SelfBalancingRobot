@@ -54,15 +54,16 @@ void setMotorSpeed(int motor, int16_t tspeed)
   else if (speed > 0)
   {
     timer_period = 160000 / speed; // 160 kHz interrupts
-    digitalWrite(stepperDirPin[motor], (motor == 0)?LOW:HIGH);
+    digitalWrite(stepperDirPin[motor], (motor == 0)?HIGH:HIGH);
   }
   else
   {
     timer_period = -160000 / speed; // 160 kHz interrupts
-    digitalWrite(stepperDirPin[motor], (motor == 0)?HIGH:LOW);
+    digitalWrite(stepperDirPin[motor], (motor == 0)?LOW:LOW);
   }
   if (timer_period > 65535)   // Check for minimun speed (maximun period without overflow)
-  { timer_period = -1;
+  { 
+    timer_period = -1;
   }
   MotorTime[motor] = timer_period;
 }

@@ -1,5 +1,5 @@
 const byte DNS_PORT = 53;
-IPAddress apIP(192, 168, 1, 1);
+IPAddress apIP(192, 168, 4, 1);
 DNSServer dnsServer;
 bool ap = false;
 
@@ -17,10 +17,10 @@ void initWifi()
   settings.ssid[32] = 0;
   settings.password[32] = 0;
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(settings.ssid, settings.password);
+  //WiFi.mode(WIFI_STA);
+  //WiFi.begin(settings.ssid, settings.password);
 
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  //if (WiFi.waitForConnectResult() != WL_CONNECTED)
   {
     ap = true;
     WiFi.mode(WIFI_AP);
