@@ -1,5 +1,5 @@
 
-#define MAX_ACCEL 5
+#define MAX_ACCEL 8
 
 #define RAD2GRAD 57.2957795
 #define GRAD2RAD 0.01745329251994329576923690768489
@@ -22,7 +22,9 @@ float speedPIControl(float DT, float input, float setPoint,  float Kp, float Ki)
   PID_errorSum = constrain(PID_errorSum, -ITERM_MAX, ITERM_MAX);
 
   //Serial.println(PID_errorSum);
-  Ki = 0.32;
+  Ki = 0.04;
+  Kp = 0.15;
+  
   output = Kp * error + Ki * PID_errorSum * DT * 0.001; // DT is in miliseconds...
 
   static int debugCount = 0;

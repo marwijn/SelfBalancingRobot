@@ -27,7 +27,6 @@ void ICACHE_RAM_ATTR timerHandler (void)
       GPOC = (1 << stepperStepPin[i]);
     }
   }
-  timer0_write(ESP.getCycleCount() + 1000);
 }
 
 void setMotorSpeed(int motor, int16_t tspeed)
@@ -54,15 +53,15 @@ void setMotorSpeed(int motor, int16_t tspeed)
   else if (speed > 0)
   {
     timer_period = 160000 / speed; // 160 kHz interrupts
-    digitalWrite(stepperDirPin[motor], (motor == 0)?HIGH:HIGH);
+    digitalWrite(stepperDirPin[motor], (motor == 0) ? HIGH : HIGH);
   }
   else
   {
     timer_period = -160000 / speed; // 160 kHz interrupts
-    digitalWrite(stepperDirPin[motor], (motor == 0)?LOW:LOW);
+    digitalWrite(stepperDirPin[motor], (motor == 0) ? LOW : LOW);
   }
   if (timer_period > 65535)   // Check for minimun speed (maximun period without overflow)
-  { 
+  {
     timer_period = -1;
   }
   MotorTime[motor] = timer_period;
@@ -80,6 +79,11 @@ void enableMotors(bool enable)
   }
 }
 
+extern "C"
+{
+  void NmiTimSetFunc (void(*)(void));
+}
+
 void initMotors()
 {
   digitalWrite(steppersEnablePin, HIGH);
@@ -89,11 +93,12 @@ void initMotors()
     pinMode(stepperStepPin[i], OUTPUT);
     pinMode(stepperDirPin[i], OUTPUT);
   }
-  noInterrupts();
-  timer0_isr_init();
-  timer0_attachInterrupt(timerHandler);
+  RTC_REG_WRITE(FRC1_CTRL_ADDRESS, BIT6 |  BIT7 );
+  ETS_FRC_TIMER1_NMI_INTR_ATTACH(timerHandler);
 
-  timer0_write(ESP.getCycleCount() + 1000);
-  interrupts();
+  TM1_EDGE_INT_ENABLE();
+  ETS_FRC1_INTR_ENABLE();
+
+  RTC_REG_WRITE(FRC1_LOAD_ADDRESS, 1000);
 }
 
