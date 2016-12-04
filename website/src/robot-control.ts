@@ -1,5 +1,5 @@
 ﻿import {autoinject, BindingEngine, Disposable, bindable} from 'aurelia-framework';
-import {Communication} from 'communication';
+import {Communication} from './communication';
 
 @autoinject
 export class RobotControl {

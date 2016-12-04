@@ -24,7 +24,7 @@
 
     setSpeed(speed: number, steering: number): void {
         let now = new Date();
-        let elapsed = now - this.lastMessage;
+        let elapsed = now.getTime() - this.lastMessage.getTime();
         if (elapsed < 200) return;
         this.lastMessage = now;
 
