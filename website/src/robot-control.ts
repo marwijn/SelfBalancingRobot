@@ -1,5 +1,7 @@
 ﻿import {autoinject, BindingEngine, Disposable, bindable} from 'aurelia-framework';
 import {Communication} from './communication';
+import "jquery";
+import "rangeslider";
 
 @autoinject
 export class RobotControl {
@@ -44,6 +46,6 @@ export class RobotControl {
     }
 
     speedChanged(): void {
-        this.communication.setSpeed(this.speed, this.rotation);
+      this.communication.setSpeed(this.speed, this.rotation);
     }
 }

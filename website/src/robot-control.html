@@ -1,9 +1,15 @@
 ﻿<template>
-    <section class="au-animate">
-        <!--<input type="range" max="100" min="-100" value.bind="speed & throttle:100" class="speed-control"/>
-        <input type="range" max="100" min="-100" value.bind="rotation & throttle:100" class="steering-control"/>
-        -->
-        <input type="range" value.bind="speed"></input>
-        <input type="range" value.bind="rotation"></input>
-    </section>
+  <require from="./slider"></require>
+  <require from="./rangeslider.css"></require>
+  <section class="au-animate">
+    <
+    <div>next</div>-->
+    <slider class="col-xs-4 div1" data-orientation="vertical" value.bind="speed" min="-100" max="100"></slider>
+    <div class="div4">
+        <input type="checkbox">
+    </div>
+    <div class="col-xs-8 div2">
+      <slider data-orientation="horizontal" value.bind="rotation" min="-100" max="100"></slider>
+    </div>
+  </section>
 </template>

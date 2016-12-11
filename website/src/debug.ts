@@ -2,7 +2,7 @@
 import {Communication} from './communication';
 
 @autoinject
-export class NetworkSettings {
+export class Debug {
     communication: Communication;
     public lines: string[] = [];
 

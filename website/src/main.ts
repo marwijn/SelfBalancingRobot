@@ -1,6 +1,7 @@
 import {Aurelia} from 'aurelia-framework'
 import environment from './environment';
 
+
 //Configure Bluebird Promises.
 //Note: You may want to use environment-specific configuration.
 (<any>Promise).config({
@@ -9,7 +10,10 @@ import environment from './environment';
   }
 });
 
+
+
 export function configure(aurelia: Aurelia) {
+
   aurelia.use
     .standardConfiguration()
     .feature('resources');

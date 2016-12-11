@@ -140,8 +140,17 @@
             "resources": [
               "css/bootstrap.css"
             ]
+          },
+          {
+            "name" : "rangeslider",
+            "path" : "../node_modules/rangeslider.js/dist",
+            "main" : "rangeslider",
+            "deps" : ["jquery"],
+            "resources" : ["rangeslider.css"]
           }
         ]
+
+
       }
     ]
   }
